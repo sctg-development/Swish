@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:experimental
 # Copyright 2024 SCTG Development - Ronan LE MEILLAT
 # SPDX-License-Identifier: AGPL-3.0-or-later
-FROM ubuntu:noble AS builder
+FROM ubuntu:24.10 AS builder
 RUN apt-get update && apt-get install --no-install-recommends -y curl build-essential debhelper devscripts \
                 pkg-config libssl-dev libc-dev libstdc++-13-dev libgcc-13-dev \
                 zip git libcurl4-openssl-dev musl-dev musl-tools cmake libclang-dev g++
@@ -55,5 +55,5 @@ RUN export TARGET=$(cat /build/_target) \
     && cargo build --target=$TARGET --release || (echo "Build failed, entering sleep mode for debugging..." && cp -av /root/.cargo /build/ && exit 1) \
     && mkdir -p /build/ubuntu-noble/bin \
     && cp /build/target/$(cat /build/_target)/release/swish /build/ubuntu-noble/bin/
-FROM ubuntu:noble
+FROM ubuntu:24.10
 COPY --from=builder /build/ubuntu-noble/bin/swish /usr/local/bin/swish
